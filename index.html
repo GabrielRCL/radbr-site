@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rad Helper</title>
+<meta name="description" content="Party de verdade, reset automático, Hunt Analyzer no celular e um launcher que abre e loga os seus chars. Teste grátis; vitalício a partir de R$ 60.">
+<meta name="theme-color" content="#1b1a17">
+<link rel="icon" type="image/png" href="img/icone.png">
+<link rel="apple-touch-icon" href="img/icone.png">
+<link rel="canonical" href="https://radbr.gabrielrcl.dev/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Rad Helper">
+<meta property="og:title" content="Rad Helper: bot completo para o RadBR">
+<meta property="og:description" content="Party de verdade, reset automático, Hunt Analyzer no celular e um launcher que abre e loga os seus chars. Teste grátis; vitalício a partir de R$ 60.">
+<meta property="og:url" content="https://radbr.gabrielrcl.dev/">
+<meta property="og:image" content="https://radbr.gabrielrcl.dev/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="O Hunt Analyzer do Rad Helper no celular: saldo por hora, raw XP por hora e o tempo da sessão">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+/* Layout: como o proprio launcher — paineis de pedra escura com borda dourada; o topo divide o texto e o celular com o painel de
+   verdade; depois as telas reais, uma por recurso; o catalogo completo em cards por categoria; o preco e as perguntas no fim. */
+:root {
+  --fundo: #1b1a17;        /* a pedra mais funda, puxada para o ouro */
+  --pedra: #25231f;        /* as faixas */
+  --cartao: #2f2c27;       /* os cards */
+  --cartao-2: #38342e;
+  --linha: #f1b4321f;      /* a borda dourada fraca */
+  --linha-2: #ffffff14;
+  --texto: #ece6d9;
+  --texto-2: #b9b09f;
+  --texto-3: #8f8778;
+  --ouro: #f1b432;
+  --ouro-1: #ffe060;
+  --ouro-3: #e8931c;
+  --sobre-ouro: #2a1600;
+  --verde: #5fe38a;
+  --vinho: #5a1d1a;
+
+  --f-texto: Verdana, "DejaVu Sans", Geneva, sans-serif;
+  --f-titulo: Verdana, "DejaVu Sans", Geneva, sans-serif;
+  --t-1: clamp(32px, 6.2vw, 58px);
+  --t-2: clamp(24px, 3.6vw, 36px);
+  --t-3: 19px;
+  --t-corpo: 16px;
+  --t-peq: 13.5px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fundo); color: var(--texto); font-family: var(--f-texto); font-size: var(--t-corpo); line-height: 1.6;
+       -webkit-text-size-adjust: 100%; }
+img { max-width: 100%; display: block; }
+a { color: var(--ouro-1); }
+h1, h2, h3 { font-family: var(--f-titulo); text-wrap: balance; margin: 0; line-height: 1.12; letter-spacing: -.015em; }
+p { margin: 0; }
+.faixa { padding-block: clamp(48px, 8vw, 96px); padding-left: max(16px, env(safe-area-inset-left, 0px));
+         padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.faixa.escura { background: var(--pedra); border-block: 1px solid var(--linha); }
+.miolo { max-width: 1120px; margin: 0 auto; }
+.rotulo { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ouro); }
+.sub { color: var(--texto-2); max-width: 64ch; }
+.titulo-secao { display: grid; gap: 12px; margin-bottom: clamp(28px, 4vw, 44px); }
+.titulo-secao h2 { font-size: var(--t-2); }
+
+/* ---------------------------------------------------------------- o topo */
+.topo { position: relative; overflow: hidden; padding-block: 28px clamp(40px, 7vw, 84px);
+        padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.topo::before { content: ""; position: absolute; inset: 0; background: url("img/caca.jpg") center 35% / cover no-repeat;
+                opacity: .38; }
+.topo::after { content: ""; position: absolute; inset: 0;
+               background: linear-gradient(180deg, #1b1a17d9 0%, #1b1a1799 40%, #1b1a17 100%),
+                           radial-gradient(60% 50% at 80% 30%, #f1b43222, transparent 70%); }
+.topo > * { position: relative; z-index: 1; }
+.marca { display: flex; align-items: center; gap: 12px; max-width: 1120px; margin: 0 auto 40px; }
+.marca img { width: 44px; height: 44px; border-radius: 10px; }
+.marca b { font-size: 20px; letter-spacing: .01em; }
+.marca b span { color: var(--ouro); }
+.marca .indep { margin-left: auto; font-size: 12px; color: var(--texto-3); text-align: right; max-width: 24ch; line-height: 1.35; }
+.heroi { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(28px, 5vw, 64px);
+         align-items: center; }
+.heroi h1 { font-size: var(--t-1); }
+.heroi h1 em { font-style: normal; color: var(--ouro); display: block; }
+.heroi .sub { margin-top: 20px; font-size: 17px; }
+.acoes { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.botao { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 12px; font-weight: 700; font-size: 16px;
+         text-decoration: none; border: 0; cursor: pointer; font-family: inherit; }
+.botao.ouro { background: linear-gradient(180deg, var(--ouro-1), var(--ouro) 55%, var(--ouro-3)); color: var(--sobre-ouro);
+              box-shadow: 0 8px 22px #0008, inset 0 1px 0 #fff8; }
+.botao.pedra { background: var(--cartao-2); color: var(--texto); box-shadow: 0 0 0 1px var(--linha-2); }
+.botao:focus-visible { outline: 3px solid var(--ouro-1); outline-offset: 3px; }
+.botao svg { width: 18px; height: 18px; }
+.provas { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 30px; font-size: 14px; color: var(--texto-2); }
+.provas b { color: var(--verde); font-size: 15px; }
+
+/* o celular (o print de verdade numa moldura) */
+.celular { border-radius: 38px; padding: 9px; background: #0c0c0b; box-shadow: 0 0 0 2px #3b3732, 0 30px 70px #000c; }
+.celular img { border-radius: 30px; width: 100%; }
+.heroi .celular { max-width: 360px; justify-self: center; transform: rotate(1.5deg); }
+.heroi .nota { position: relative; }
+.aviso-cel { position: absolute; left: -40px; bottom: 70px; width: min(330px, 92%); border-radius: 18px; overflow: hidden;
+             box-shadow: 0 0 0 1px #3b3732, 0 18px 40px #000d; transform: rotate(-3deg); }
+.aviso-cel .eti { position: absolute; right: 10px; top: 8px; font-size: 11px; font-weight: 700; color: var(--sobre-ouro); background: var(--ouro);
+                  padding: 2px 8px; border-radius: 999px; }
+
+/* ---------------------------------------------------------------- os numeros */
+.numeros { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.num { background: var(--cartao); border-radius: 16px; padding: 18px 18px 16px; box-shadow: 0 0 0 1px var(--linha); }
+.num b { display: block; font-size: clamp(24px, 3vw, 32px); color: var(--verde); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.num span { display: block; margin-top: 6px; font-size: 14px; color: var(--texto-2); line-height: 1.45; }
+.fonte-num { margin-top: 14px; font-size: 13px; color: var(--texto-3); }
+
+/* ---------------------------------------------------------------- passos */
+.passos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; counter-reset: p; }
+.passos li { counter-increment: p; background: var(--cartao); border-radius: 16px; padding: 18px; box-shadow: 0 0 0 1px var(--linha-2); }
+.passos li::before { content: counter(p); display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; margin-bottom: 12px;
+                     background: var(--ouro); color: var(--sobre-ouro); font-weight: 700; }
+.passos h3 { font-size: 17px; margin-bottom: 6px; }
+.passos p { font-size: 14.5px; color: var(--texto-2); }
+
+/* ---------------------------------------------------------------- recurso com tela */
+.recurso { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 5vw, 60px); align-items: center; }
+.recurso + .recurso { margin-top: clamp(56px, 8vw, 96px); }
+.recurso.inverte > :first-child { order: 2; }
+.recurso.largo { grid-template-columns: minmax(0, 1fr); }
+.largo-texto { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px clamp(24px, 5vw, 60px); align-items: start; }
+.largo-texto .rotulo, .largo-texto h2, .largo-texto .sub { grid-column: 1; }
+.largo-texto ul { grid-column: 2; grid-row: 1 / span 3; margin: 0; }
+.recurso h2 { font-size: var(--t-2); margin: 10px 0 14px; }
+.recurso ul { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.recurso li { position: relative; padding-left: 26px; color: var(--texto-2); }
+.recurso li::before { content: ""; position: absolute; left: 4px; top: .62em; width: 9px; height: 9px; transform: rotate(45deg);
+                      background: var(--ouro); border-radius: 2px; }
+.recurso li b { color: var(--texto); }
+.tela { border-radius: 14px; overflow: hidden; box-shadow: 0 0 0 1px #3b3732, 0 24px 56px #000b; }
+.tela.pixel img { image-rendering: pixelated; }
+.par-telas { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.legenda { margin-top: 10px; font-size: 13px; color: var(--texto-3); }
+.celulares { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.celulares figure { margin: 0; }
+.celulares figcaption { margin-top: 10px; font-size: 13.5px; color: var(--texto-2); text-align: center; }
+
+/* ---------------------------------------------------------------- catalogo */
+.catalogo { display: flex; gap: 16px; align-items: flex-start; }
+.catalogo .col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.cat { background: var(--cartao); border-radius: 16px; padding: 20px 20px 10px; box-shadow: 0 0 0 1px var(--linha-2); min-width: 0; }
+.cat h3 { font-size: var(--t-3); display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.cat h3 svg { width: 22px; height: 22px; color: var(--ouro); flex: none; }
+.cat ul { list-style: none; margin: 0; padding: 0; }
+.cat li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 11px 0; border-top: 1px solid var(--linha-2); }
+.cat li:first-child { border-top: 0; }
+.cat .nome { font-weight: 700; font-size: 15px; }
+.cat .desc { grid-column: 1 / -1; font-size: 14px; color: var(--texto-2); line-height: 1.5; }
+.plano { align-self: start; font-size: 11px; font-weight: 700; letter-spacing: .08em; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+.plano.t { color: #c9f5d6; background: #1f3d2a; box-shadow: 0 0 0 1px #5fe38a44; }
+.plano.f { color: var(--sobre-ouro); background: var(--ouro); }
+.legenda-planos { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 18px; font-size: 14px; color: var(--texto-2); }
+
+/* ---------------------------------------------------------------- precos */
+.precos { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 16px; align-items: stretch; }
+.preco { background: var(--cartao); border-radius: 18px; padding: 26px; box-shadow: 0 0 0 1px var(--linha-2); }
+.preco.destaque { background: linear-gradient(160deg, #3a2f18, var(--cartao) 55%); box-shadow: 0 0 0 2px var(--ouro), 0 24px 60px #000a; }
+.preco h3 { font-size: 22px; }
+.preco .valor { font-size: clamp(30px, 4vw, 40px); font-weight: 700; color: var(--ouro-1); margin: 12px 0 4px; letter-spacing: -.02em; }
+.preco .valor small { font-size: 16px; color: var(--texto-2); font-weight: 400; letter-spacing: 0; }
+.preco p { color: var(--texto-2); font-size: 15px; }
+.tabela-preco { width: 100%; border-collapse: collapse; margin-top: 16px; font-variant-numeric: tabular-nums; }
+.tabela-preco th, .tabela-preco td { padding: 8px 6px; text-align: center; border-top: 1px solid var(--linha-2); font-size: 14px; }
+.tabela-preco th { color: var(--texto-3); font-weight: 400; font-size: 12.5px; }
+.tabela-preco td { color: var(--texto); font-weight: 700; }
+.escassez { display: inline-block; margin-top: 16px; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; color: var(--sobre-ouro);
+            background: var(--ouro); }
+.lista-preco { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 14.5px; color: var(--texto-2); }
+.lista-preco li::before { content: "✓ "; color: var(--verde); font-weight: 700; }
+
+/* ---------------------------------------------------------------- perguntas */
+.faq { display: grid; gap: 10px; max-width: 820px; }
+.faq details { background: var(--cartao); border-radius: 14px; box-shadow: 0 0 0 1px var(--linha-2); }
+.faq summary { cursor: pointer; padding: 16px 18px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; color: var(--ouro); font-size: 20px; line-height: 1; }
+.faq details[open] summary::after { content: "–"; }
+.faq summary:focus-visible { outline: 3px solid var(--ouro-1); outline-offset: -3px; border-radius: 14px; }
+.faq details p { padding: 0 18px 16px; color: var(--texto-2); font-size: 15px; }
+
+/* ---------------------------------------------------------------- contato e rodape */
+.contato { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; background: var(--cartao);
+           border-radius: 20px; padding: clamp(22px, 4vw, 36px); box-shadow: 0 0 0 2px var(--linha); }
+.contato h2 { font-size: var(--t-2); }
+.contato .numero { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
+.contato .numero code { font-family: var(--f-texto); font-size: 18px; font-weight: 700; color: var(--texto); background: var(--cartao-2);
+                        padding: 8px 12px; border-radius: 10px; user-select: all; }
+.copiado { font-size: 13px; color: var(--verde); }
+footer { padding-block: 28px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+         color: var(--texto-3); font-size: 13px; text-align: center; }
+
+/* ---------------------------------------------------------------- celular */
+@media (max-width: 860px) {
+  .heroi, .recurso, .precos, .contato { grid-template-columns: minmax(0, 1fr); }
+  .recurso.inverte > :first-child { order: 0; }
+  .largo-texto { grid-template-columns: minmax(0, 1fr); }
+  .largo-texto ul { grid-column: 1; grid-row: auto; margin-top: 18px; }
+  .numeros, .passos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .catalogo { flex-direction: column; }
+  .catalogo .col { width: 100%; }
+  .celulares { grid-template-columns: repeat(4, 72%); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
+  .celulares figure { scroll-snap-align: center; }
+  .heroi .celular { max-width: 300px; }
+  .aviso-cel { left: 0; bottom: 40px; }
+  .marca .indep { display: none; }
+}
+@media (max-width: 480px) {
+  .par-telas { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .heroi .celular { animation: sobe .7s ease-out both; }
+  .aviso-cel { animation: chega .6s .5s ease-out both; }
+  @keyframes sobe { from { transform: translateY(18px) rotate(1.5deg); } to { transform: rotate(1.5deg); } }
+  @keyframes chega { from { transform: translateY(-10px) rotate(-3deg); } to { transform: rotate(-3deg); } }
+}
+</style>
+</head>
+<body>
+<header class="topo">
+  <div class="marca">
+    <img src="img/icone.png" alt="">
+    <b><span>Rad</span> Helper</b>
+    <span class="indep">Ferramenta independente: não é feita nem mantida pelo RadBR.</span>
+  </div>
+  <div class="heroi">
+    <div>
+      <p class="rotulo">Bot completo para o RadBR · no vBot</p>
+      <h1>Seus chars caçando juntos.<em>E o lucro no seu celular.</em></h1>
+      <p class="sub">Party de verdade, reset automático, Hunt Analyzer no celular e um launcher que abre e loga todos os seus clients. Tudo dentro do vBot que você já usa, em português, com ajuda em cada função.</p>
+      <div class="acoes">
+        <a class="botao ouro" href="https://wa.me/5527999059463?text=Ol%C3%A1!%20Quero%20testar%20o%20Rad%20Helper." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5.2v13.6a.8.8 0 0 0 1.2.7l10.6-6.8a.8.8 0 0 0 0-1.4L9.2 4.5A.8.8 0 0 0 8 5.2z" fill="currentColor"/></svg>
+          Quero testar grátis</a>
+        <a class="botao pedra" href="#precos">Ver preços</a>
+      </div>
+      <div class="provas"><span><b>+655k/h</b> de saldo numa sessão de 19h</span><span><b>7 chars</b> na mesma party</span><span><b>0</b> mortes em 3h07</span></div>
+    </div>
+    <div class="nota">
+      <div class="celular"><img src="img/cel_geral.jpg" alt="O Hunt Analyzer no celular: tempo de sessão 3h07, saldo por hora +377k, raw XP por hora 2,64kk, gold por hora 435k"></div>
+      <div class="aviso-cel"><img src="img/ntfy.jpg" alt="Notificação no celular: Reset feito, abrindo os clients de novo, os 7 resetados"><span class="eti">aviso no celular</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="faixa escura" aria-labelledby="t-numeros">
+  <div class="miolo">
+    <div class="titulo-secao"><p class="rotulo">Números da nossa hunt</p><h2 id="t-numeros">Prints de verdade, não simulação</h2></div>
+    <div class="numeros">
+      <div class="num"><b>+655k/h</b><span>de saldo numa sessão de 19h05 (loot menos supplies)</span></div>
+      <div class="num"><b>3,77kk/h</b><span>de raw XP numa sessão de 13h01, o time somado</span></div>
+      <div class="num"><b>425kk/h</b><span>de XP do jogo por char, os 7 juntos</span></div>
+      <div class="num"><b>0</b><span>mortes numa hunt de 3h07 com 7 chars</span></div>
+    </div>
+    <p class="fonte-num">Do Hunt Analyzer da nossa party de 7 chars na Vortex, em 24 e 25/10/2026. O resultado depende da sua hunt, do seu setup e dos seus preços.</p>
+  </div>
+</section>
+
+<section class="faixa" aria-labelledby="t-como">
+  <div class="miolo">
+    <div class="titulo-secao"><p class="rotulo">Como funciona</p><h2 id="t-como">Do download à hunt em quatro passos</h2></div>
+    <ol class="passos">
+      <li><h3>Baixa o launcher</h3><p>Um programa só para Windows. Ele instala o SmartBot no seu vBot e se atualiza sozinho.</p></li>
+      <li><h3>Cadastra as contas</h3><p>A senha fica no cofre do Windows do seu PC e nunca é enviada para ninguém.</p></li>
+      <li><h3>Abre todos com 1 clique</h3><p>O launcher abre o RadBR e entra em cada char. Quem já está aberto é pulado.</p></li>
+      <li><h3>Escolhe o leader e caça</h3><p>Os outros seguem, batem no mesmo alvo e você acompanha tudo pelo celular.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="faixa escura" aria-labelledby="t-recursos">
+  <div class="miolo">
+    <div class="titulo-secao"><p class="rotulo">As telas</p><h2 id="t-recursos">O que você vê usando</h2></div>
+
+    <div class="recurso">
+      <div>
+        <p class="rotulo">Party</p>
+        <h2>Um leader, os outros fazem o resto</h2>
+        <p class="sub">Você monta a party no launcher. O 1º é o leader e convida; os outros aceitam, seguem e atacam junto.</p>
+        <ul>
+          <li><b>Follow de verdade:</b> passa escada, buraco, corda e teleport atrás do leader.</li>
+          <li><b>Combo:</b> todos batem no mesmo monstro que o leader, mesmo com vários iguais na tela.</li>
+          <li><b>Auto Party:</b> convida, aceita e liga o shared XP sozinho.</li>
+          <li><b>Vários grupos:</b> quem joga com mais de uma party organiza cada uma.</li>
+        </ul>
+      </div>
+      <div><div class="tela"><img src="img/party.jpg" alt="A tela Party do launcher: o leader convida, os outros aceitam, com Auto Party, Follow e Combo ligados"></div>
+        <p class="legenda">A tela Party do launcher (os nomes dos chars foram borrados).</p></div>
+    </div>
+
+    <div class="recurso largo">
+      <div class="largo-texto">
+        <p class="rotulo">Hunt Analyzer</p>
+        <h2>O lucro da hunt, ao vivo, no celular</h2>
+        <p class="sub">Um painel que abre no navegador do celular, com os números de cada char atualizando a cada 2 segundos. Fora de casa, pelo Tailscale (um app grátis).</p>
+        <ul>
+          <li><b>Saldo por hora:</b> o loot com os seus preços, menos o que foi gasto em supplies.</li>
+          <li><b>Raw XP por hora:</b> o XP dos monstros sem o level no meio, para comparar hunts mesmo resetando.</li>
+          <li><b>Autonomia:</b> quanto tempo dura cada supply no ritmo da hunt.</li>
+          <li><b>Histórico:</b> cada sessão guardada, uma por reset, para comparar antes e depois.</li>
+        </ul>
+      </div>
+      <div class="celulares" aria-label="Telas do Hunt Analyzer">
+        <figure><div class="celular"><img src="img/cel_geral.jpg" alt="Geral: os indicadores da sessão"></div><figcaption>Geral</figcaption></figure>
+        <figure><div class="celular"><img src="img/cel_lucro.jpg" alt="Lucro e XP: lucro acumulado e raw XP por minuto"></div><figcaption>Lucro e XP</figcaption></figure>
+        <figure><div class="celular"><img src="img/cel_loot.jpg" alt="Loot e supplies: os preços de cada item e o XP de cada monstro"></div><figcaption>Loot e supplies</figcaption></figure>
+        <figure><div class="celular"><img src="img/cel_sessoes.jpg" alt="Sessões: o saldo por hora de cada sessão"></div><figcaption>Sessões</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="recurso">
+      <div>
+        <p class="rotulo">Launcher</p>
+        <h2>Abre, loga, reseta e reabre</h2>
+        <p class="sub">A tela Contas cuida dos seus chars fora do jogo.</p>
+        <ul>
+          <li><b>Abrir todos:</b> abre o RadBR e entra em cada char com a conta e a senha.</li>
+          <li><b>Reabrir todos:</b> com 1 clique, fecha e abre de novo todos os clients, para liberar a memória.</li>
+          <li><b>Reset automático:</b> no level certo, o time vai pro Safe Spot, desloga, reseta no site, abre e volta a caçar.</li>
+          <li><b>Aviso no celular:</b> reset feito, time parado, morte, queda, player na tela.</li>
+        </ul>
+      </div>
+      <div><div class="tela"><img src="img/contas.jpg" alt="A tela Contas do launcher: os 7 chars em jogo, Abrir todos, Reabrir todos, Testar todos e Resetar todos"></div>
+        <p class="legenda">A tela Contas (os nomes e as contas foram borrados).</p></div>
+    </div>
+
+    <div class="recurso inverte">
+      <div>
+        <p class="rotulo">Dentro do vBot</p>
+        <h2>Cada função com Setup e Help em português</h2>
+        <p class="sub">O SmartBot aparece na aba Main do vBot, uma linha por função: clica para ligar, Setup para ajustar e Help para entender o que faz.</p>
+      </div>
+      <div class="par-telas">
+        <div><div class="tela pixel"><img src="img/smartbot.png" alt="O SmartBot no vBot: License FULL active, Smart Healing, Smart Attack, Get Items, Party, Auto Reconnect e outras"></div>
+          <p class="legenda">O SmartBot na aba Main.</p></div>
+        <div><div class="tela"><img src="img/ajuda.png" alt="A ajuda do Ring by HP: o que faz, como usar e o que é bom saber"></div>
+          <p class="legenda">O Help de uma função.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faixa" id="funcoes" aria-labelledby="t-funcoes">
+  <div class="miolo">
+    <div class="titulo-secao"><p class="rotulo">Todas as funções</p><h2 id="t-funcoes">O que vem no Rad Helper</h2>
+      <p class="sub">Configs prontas para Knocker, Druid (ED), Lord Druid e Royal Paladin. Cada função liga com um clique e tem Setup e Help em português.</p></div>
+    <div class="legenda-planos"><span class="plano t">GRÁTIS</span> vem no TRIAL <span class="plano f">FULL</span> vem com a chave</div>
+    <div class="catalogo">
+      <div class="col">
+      <div class="cat"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8.5" r="3.5"/><path d="M3 20c0-3.6 2.7-6 6-6s6 2.4 6 6"/><path d="M16 5.6a3 3 0 0 1 0 5.8M17.5 14.4c2.1.6 3.5 2.6 3.5 5.6"/></svg>Party e vários chars</h3><ul><li><span class="nome">Follow Player</span><span class="plano f">FULL</span><span class="desc">Os chars seguem o leader pelo rastro dele: usam corda, escada, buraco e teleporte e voltam sozinhos para o andar dele.</span></li><li><span class="nome">Troca de leader</span><span class="plano f">FULL</span><span class="desc">Se o leader cai ou some, o próximo da lista assume em segundos. Quem perdeu o leader de vista segue o próximo que vê.</span></li><li><span class="nome">Combo Leader</span><span class="plano f">FULL</span><span class="desc">Todos atacam o alvo do leader na hora, sincronizados. Nunca mira em player.</span></li><li><span class="nome">Auto Party</span><span class="plano f">FULL</span><span class="desc">Forma a party, liga o shared XP, cura o que impede o shared (veneno, fogo, energia...) e avisa quem não aceitou o convite.</span></li><li><span class="nome">Party HUD</span><span class="plano f">FULL</span><span class="desc">Em cima do mapa, cada membro com vocação, level, distância, HP e MP.</span></li><li><span class="nome">BotServer Chat</span><span class="plano f">FULL</span><span class="desc">O que você digita numa aba do chat, todos os seus chars falam. Pegar o barco juntos, por exemplo.</span></li><li><span class="nome">Alarme da party</span><span class="plano f">FULL</span><span class="desc">Toca e pisca a barra de tarefas quando alguém da party some da tela.</span></li><li><span class="nome">Give / Get Items</span><span class="plano f">FULL</span><span class="desc">O Lord Druid passa poções e anéis para quem está acabando; o Druid e o Royal Paladin pedem e pegam do chão.</span></li></ul></div>
+      <div class="cat"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3.8 2.5 5.1 5.6.8-4 4 .9 5.5-5-2.6-5 2.6.9-5.5-4-4 5.6-.8z"/></svg>Cura e ataque da sua vocação</h3><ul><li><span class="nome">Knocker</span><span class="plano f">FULL</span><span class="desc">Smart Attack: Rabie!, Combo Blow! e Blow! na ordem certa, com mana mínima por magia.</span></li><li><span class="nome">Druid (ED)</span><span class="plano f">FULL</span><span class="desc">Smart Healing: sio em quem está mais baixo, mas res com 2 ou mais baixos, cura de emergência e sio em quem está paralisado. Smart Attack com UE, runas, SD e exori, pulando imunes.</span></li><li><span class="nome">Lord Druid</span><span class="plano f">FULL</span><span class="desc">Smart Heal com Cura-ja e Vida-ja em si e nos amigos. Smart Attack com Divinidade-ja, runas, Morra-ja e Martelos-ja. Summon mantém as abóboras.</span></li><li><span class="nome">Royal Paladin</span><span class="plano f">FULL</span><span class="desc">Smart Attack com exevo mas san, runas de área, exori gran con e exori con, e SD quando falta mana. Quiver sempre cheio.</span></li><li><span class="nome">Ring by HP</span><span class="plano t">GRÁTIS</span><span class="desc">Põe o energy ring com a vida baixa e devolve o anel de antes quando a vida volta. Para todas as vocações.</span></li></ul></div>
+      <div class="cat"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4.5V9H9"/></svg>Reset automático</h3><ul><li><span class="nome">Party Reset</span><span class="plano f">FULL</span><span class="desc">Com todos no level do reset, o time vai ao Safe Spot e desloga. O launcher reseta no site e o time volta para a hunt.</span></li><li><span class="nome">Fechar e reabrir no reset</span><span class="plano f">FULL</span><span class="desc">Fecha os clients durante o reset e abre e loga de novo depois, liberando a memória.</span></li><li><span class="nome">Proteções</span><span class="plano f">FULL</span><span class="desc">Nunca reseta o mesmo char duas vezes em 30 min, tenta até 3 vezes e, se o site não responder, não manda de novo.</span></li><li><span class="nome">Cancelar e Entrar de novo</span><span class="plano f">FULL</span><span class="desc">O launcher mostra quem falta sair, deixa cancelar a rodada e relogar quem ficou fora.</span></li><li><span class="nome">Testar e Resetar pela tela Contas</span><span class="plano t">GRÁTIS</span><span class="desc">Reset manual pelo site, sem digitar conta e senha.</span></li></ul></div>
+      <div class="cat"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19.5V6a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9z"/><path d="M9 8.5h7M9 12h4.5"/></svg>No celular</h3><ul><li><span class="nome">Hunt Analyzer</span><span class="plano f">FULL</span><span class="desc">Saldo, raw XP, XP, gold e gasto por hora, autonomia dos supplies, kills e quanto falta para o reset. Gráficos, o card de cada char com dano e cura por magia e o custo em gp, e o histórico das sessões. A página abre no TRIAL, mas a contagem é do FULL.</span></li><li><span class="nome">Avisos no celular (ntfy)</span><span class="plano f">FULL</span><span class="desc">Morte, queda, player perto, supply acabando, time parado, level up, sem bless, Safe Spot, reset e um resumo de hora em hora. Quando os 7 têm o mesmo aviso, vai uma mensagem só.</span></li></ul></div>
+      </div>
+      <div class="col">
+      <div class="cat"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 19 12l-7 8.5L5 12z" fill="currentColor"/></svg>Caça e loot</h3><ul><li><span class="nome">Runas de área</span><span class="plano f">FULL</span><span class="desc">Escolhe o melhor SQM para Avalanche e Stone Shower, sem contar monstro imune nem atravessar parede.</span></li><li><span class="nome">Invisible Rune</span><span class="plano t">GRÁTIS</span><span class="desc">Solta a runa de área onde está o monstro invisível.</span></li><li><span class="nome">Immune Monsters</span><span class="plano t">GRÁTIS</span><span class="desc">Uma lista de imunidades para todos os chars: as magias não são gastas em monstro imune.</span></li><li><span class="nome">Loot x Chase e Lure x Chase</span><span class="plano t">GRÁTIS</span><span class="desc">Desliga o chase enquanto o bot pega o loot ou enquanto está lurando.</span></li><li><span class="nome">Miss-Click</span><span class="plano t">GRÁTIS</span><span class="desc">Ataca de novo o mesmo alvo para o ataque básico sair mais rápido.</span></li><li><span class="nome">Loot Separator</span><span class="plano f">FULL</span><span class="desc">Manda o loot para as depot boxes certas e puxa as poções da inbox, sem abrir backpack.</span></li><li><span class="nome">Organize BPs</span><span class="plano f">FULL</span><span class="desc">Mantém cada item na backpack da cor que você escolheu.</span></li><li><span class="nome">Pick Up Around</span><span class="plano f">FULL</span><span class="desc">Com uma tecla, puxa para a backpack o que está nos 9 SQMs em volta.</span></li></ul></div>
+      <div class="cat"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 19.5 6v5.5c0 4.5-3.2 8-7.5 9.5-4.3-1.5-7.5-5-7.5-9.5V6z"/><path d="m9 12 2.2 2.2L15.2 10"/></svg>Segurança</h3><ul><li><span class="nome">Hold CaveBot</span><span class="plano f">FULL</span><span class="desc">Segura o CaveBot até o time estar na party, na tela, perto e com vida. Para na hora, como um ESC.</span></li><li><span class="nome">Go to who is far</span><span class="plano f">FULL</span><span class="desc">O leader volta para buscar quem ficou para trás.</span></li><li><span class="nome">Safe Spot</span><span class="plano f">FULL</span><span class="desc">No server save (ou no level do reset), leva o time para um SQM seguro e volta para a hunt depois.</span></li><li><span class="nome">Auto Reconnect</span><span class="plano f">FULL</span><span class="desc">Entra de novo cerca de 1 s depois da queda e tenta até conseguir. Não reconecta depois de morte ou logout.</span></li><li><span class="nome">Caixa-preta</span><span class="plano f">FULL</span><span class="desc">Grava os 60 s antes de cada morte (dano por monstro, curas, vida e mana) para você entender o que aconteceu.</span></li><li><span class="nome">Bless Check</span><span class="plano f">FULL</span><span class="desc">Confere a bless de tempo em tempo e avisa no celular quando falta.</span></li></ul></div>
+      <div class="cat"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 7.5v.1M8 16.5v.1"/></svg>O launcher</h3><ul><li><span class="nome">Instala e se atualiza</span><span class="plano t">GRÁTIS</span><span class="desc">Instala o bot no RadBR e se atualiza sozinho, o launcher e o bot. Se uma versão nova não abrir, volta para a anterior.</span></li><li><span class="nome">Contas</span><span class="plano t">GRÁTIS</span><span class="desc">Seus chars por conta, com a senha só no cofre do Windows do seu PC.</span></li><li><span class="nome">Abrir todos</span><span class="plano t">GRÁTIS</span><span class="desc">Abre cada client, digita a conta e a senha e entra no char. Quem já está aberto é pulado.</span></li><li><span class="nome">Reabrir todos</span><span class="plano t">GRÁTIS</span><span class="desc">Com 1 clique, fecha e abre de novo todos os clients para liberar a memória.</span></li><li><span class="nome">Party</span><span class="plano f">FULL</span><span class="desc">Monta os grupos e a ordem de cada party; vale nos bots em até 2 s.</span></li><li><span class="nome">Foco dos clientes</span><span class="plano t">GRÁTIS</span><span class="desc">Alt + número do teclado traz o client de cada char para a frente.</span></li><li><span class="nome">Recarregar os bots</span><span class="plano t">GRÁTIS</span><span class="desc">Recarrega todos de uma vez, esperando sair de luta.</span></li></ul></div>
+      <div class="cat"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>Utilidades e edições do vBot</h3><ul><li><span class="nome">Item Counter</span><span class="plano t">GRÁTIS</span><span class="desc">Quantas poções e runas você ainda tem, contando backpack fechada.</span></li><li><span class="nome">Auto Open Backpacks</span><span class="plano t">GRÁTIS</span><span class="desc">Abre as backpacks ao logar, cada janela no lugar salvo.</span></li><li><span class="nome">Auto Mount, Mana Burn e Say Timer</span><span class="plano t">GRÁTIS</span><span class="desc">Monta sozinho fora da PZ, fala a magia quando a mana está sobrando e fala um texto (como !cast on) de tempo em tempo.</span></li><li><span class="nome">Fogo de Artifício</span><span class="plano t">GRÁTIS</span><span class="desc">Usa o item de mana na luta abaixo de X% e guarda a recarga de 12 h.</span></li><li><span class="nome">Looting melhorado</span><span class="plano t">GRÁTIS</span><span class="desc">Lista de itens para ignorar, gold e poções numa backpack e o resto em outra, sem o abre e fecha das backpacks cheias.</span></li><li><span class="nome">Self Healer, AttackBot e Conditions</span><span class="plano t">GRÁTIS</span><span class="desc">Editar a linha no lugar, sem perder a lista; a cura da paralisia só sem alvo.</span></li><li><span class="nome">Check Players</span><span class="plano t">GRÁTIS</span><span class="desc">Level, reset e vocação em cima de cada player na tela.</span></li></ul></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faixa escura" id="precos" aria-labelledby="t-precos">
+  <div class="miolo">
+    <div class="titulo-secao"><p class="rotulo">Preços</p><h2 id="t-precos">Teste grátis. Pague uma vez só.</h2></div>
+    <div class="precos">
+      <div class="preco">
+        <h3>TRIAL</h3>
+        <div class="valor">Grátis</div>
+        <p>Para conhecer e usar o básico. As funções do FULL aparecem em cinza com [FULL].</p>
+        <ul class="lista-preco" id="lista-trial"><li>O vBot 4.8 com as nossas edições (Looting, Self Healer, AttackBot, Check Players)</li><li>Item Counter, Auto Open Backpacks e Auto Mount</li><li>Invisible Rune, Immune Monsters e Loot x Chase</li><li>Ring by HP, Mana Burn, Fogo de Artifício e Say Timer</li><li>O launcher: Contas, Abrir todos, Reabrir todos e o Foco dos clientes</li></ul>
+      </div>
+      <div class="preco destaque">
+        <h3>FULL vitalício</h3>
+        <div class="valor">R$ 60 <small>para 2 chars, + R$ 15 por char a mais</small></div>
+        <p>Paga uma vez e usa para sempre. Mínimo de 2 chars: quem joga com 1 paga o de 2.</p>
+        <div style="overflow-x:auto"><table class="tabela-preco">
+          <thead><tr><th>chars</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr></thead>
+          <tbody><tr><th>total</th><td>R$ 60</td><td>R$ 75</td><td>R$ 90</td><td>R$ 105</td><td>R$ 120</td><td>R$ 135</td></tr></tbody>
+        </table></div>
+        <span class="escassez">Vitalício só para as 10 primeiras chaves</span>
+        <ul class="lista-preco"><li>Todas as funções da lista acima, inclusive o reset automático e o Hunt Analyzer</li>
+          <li>As atualizações chegam e se instalam sozinhas pelo launcher</li><li>Sem internet no meio da hunt? O FULL continua funcionando</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faixa" aria-labelledby="t-faq">
+  <div class="miolo">
+    <div class="titulo-secao"><p class="rotulo">Perguntas</p><h2 id="t-faq">Antes de comprar</h2></div>
+    <div class="faq"><details><summary>Funciona com a minha vocação?</summary><p>O SmartBot tem config pronta para Knocker, Druid (ED), Lord Druid e Royal Paladin. As outras vocações ainda não.</p></details><details><summary>O que é o TRIAL e o FULL?</summary><p>O TRIAL é grátis e tem as funções marcadas como GRÁTIS na lista. O FULL libera o resto: a party (follow, combo, auto party), o reset automático, o Hunt Analyzer, os avisos no celular e a cura e o ataque da sua vocação. No TRIAL, as funções do FULL aparecem em cinza com [FULL].</p></details><details><summary>As rotas do CaveBot vêm junto?</summary><p>Não. O bot usa as suas rotas do CaveBot. O Safe Spot grava o caminho de ida e volta na sua rota.</p></details><details><summary>O bot para se a internet cair?</summary><p>Não. Depois da primeira conferência de cada char, o FULL continua funcionando sem internet. Nada para no meio da hunt.</p></details><details><summary>Onde fica a minha senha?</summary><p>Só no cofre do Windows do seu PC (o Gerenciador de Credenciais). O Rad Helper usa a senha para entrar no jogo e no site do RadBR e nunca a envia para ninguém.</p></details><details><summary>Preciso deixar o launcher aberto?</summary><p>Para o reset automático, o Hunt Analyzer e as mensagens rápidas da party, sim. Ele fica quietinho na bandeja do Windows, ao lado do relógio.</p></details><details><summary>Como vejo o Hunt Analyzer fora de casa?</summary><p>Pelo Tailscale, um app grátis que você instala no PC e no celular. O launcher mostra um QR code: aponta a câmera e abre.</p></details><details><summary>O Windows avisou que o programa é desconhecido. É normal?</summary><p>É. O launcher é novo e ainda não tem assinatura digital, então o Windows pode avisar na primeira vez. Baixe só pelo link que eu mandar.</p></details><details><summary>Como pago e recebo a chave?</summary><p>Pix ou barras do jogo, com os mesmos valores. A chave chega pelo WhatsApp e você ativa na tela do launcher.</p></details><details><summary>Jogo com 1 char só. Vale a pena?</summary><p>Funciona com 1 char, mas o preço mínimo é o de 2 chars (R$ 60). As funções de party fazem mais diferença com 2 ou mais.</p></details><details><summary>Troquei de PC. E agora?</summary><p>A chave fica presa a um PC. Para trocar, fale comigo no WhatsApp.</p></details><details><summary>O Rad Helper é do RadBR?</summary><p>Não. É uma ferramenta independente: não é feita nem mantida pelo RadBR.</p></details></div>
+  </div>
+</section>
+
+<section class="faixa" aria-labelledby="t-contato" style="padding-top:0">
+  <div class="miolo">
+    <div class="contato">
+      <div>
+        <h2 id="t-contato">Quer testar? Chama no WhatsApp.</h2>
+        <p class="sub" style="margin-top:10px">Eu mando o link, ajudo a instalar e tiro as dúvidas.</p>
+        <div class="numero"><code id="zap">+55 (27) 99905-9463</code><button class="botao pedra" id="copiar" type="button">Copiar número</button><span class="copiado" id="copiado" role="status"></span></div>
+      </div>
+      <a class="botao ouro" href="https://wa.me/5527999059463?text=Ol%C3%A1!%20Quero%20testar%20o%20Rad%20Helper." target="_blank" rel="noopener">Falar no WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<footer>Rad Helper · Ferramenta independente: não é feita nem mantida pelo RadBR. RadBR e vBot pertencem aos seus donos.</footer>
+
+<script>
+  document.getElementById("copiar").addEventListener("click", async () => {
+    const t = document.getElementById("zap").textContent, s = document.getElementById("copiado");
+    try { await navigator.clipboard.writeText(t); s.textContent = "Copiado"; }
+    catch (e) { const r = document.createRange(); r.selectNodeContents(document.getElementById("zap"));
+                const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); s.textContent = "Selecionado: copie com Ctrl+C"; }
+    setTimeout(() => { s.textContent = ""; }, 2500);
+  });
+</script>
+</body>
+</html>
