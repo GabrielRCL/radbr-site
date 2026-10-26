@@ -3,6 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- (26/10/2026, do Hunt Analyzer) no iPhone a escala maxima em 1: o Brave reabre a pagina com a escala guardada da carga
+     anterior (voltava ampliada, cortada dos lados). A pinca de ampliar continua; no Android isso a desligaria: so no iPhone/iPad. -->
+<script>
+(function () {
+  var n = navigator, ua = n.userAgent || "";
+  if (/iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && n.maxTouchPoints > 1))
+    document.querySelector('meta[name="viewport"]').setAttribute("content", "width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover");
+})();
+</script>
 <title>Rad Helper</title>
 <meta name="description" content="Party de verdade, reset automático, Hunt Analyzer no celular e um launcher que abre e loga os seus chars. Teste grátis; vitalício a partir de R$ 60.">
 <meta name="theme-color" content="#1b1a17">
@@ -22,6 +31,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>
 :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+:root.sem-topo-seguro { padding-top: 0; }   /* (26/10/2026) o Brave: a pagina abaixo da barra dele (o topoSeguro) */
 /* Layout: como o proprio launcher — paineis de pedra escura com borda dourada; o topo divide o texto e o celular com o painel de
    verdade; depois as telas reais, uma por recurso; o catalogo completo em cards por categoria; o preco e as perguntas no fim. */
 :root {
@@ -54,6 +64,18 @@
 body { margin: 0; background: var(--fundo); color: var(--texto); font-family: var(--f-texto); font-size: var(--t-corpo); line-height: 1.6;
        -webkit-text-size-adjust: 100%; }
 img { max-width: 100%; display: block; }
+/* (26/10/2026, as boas praticas do Hunt Analyzer: ferramentas\hunt\painel_html.py) o puxar do navegador desligado (cada
+   navegador do iPhone fazia de um jeito): a pagina tem o dela (.puxar), o circulo dourado que desce e recarrega; o toque
+   duplo nao amplia (os botoes respondem na hora) */
+html, body { overscroll-behavior-y: none; }
+body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.puxar { position: fixed; left: 0; right: 0; top: 0; z-index: 30; display: flex; justify-content: center; pointer-events: none;
+         opacity: 0; transform: translateY(-44px); }
+.puxar span { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+              background: linear-gradient(var(--ouro-1), var(--ouro) 55%, var(--ouro-3)); color: var(--sobre-ouro); box-shadow: 0 4px 12px #0006; }
+.puxar svg { width: 20px; height: 20px; }
+.puxar.girando svg { animation: puxar-gira 700ms linear infinite; }
+@keyframes puxar-gira { to { transform: rotate(360deg); } }
 a { color: var(--ouro-1); }
 h1, h2, h3 { font-family: var(--f-titulo); text-wrap: balance; margin: 0; line-height: 1.12; letter-spacing: -.015em; }
 p { margin: 0; }
@@ -216,6 +238,7 @@ footer { padding-block: 28px 40px; padding-left: max(16px, env(safe-area-inset-l
 </style>
 </head>
 <body>
+<div class="puxar" id="puxar" role="status" aria-live="polite"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.34 5.66"/><path d="M20 4v7h-7"/></svg></span></div>
 <header class="topo">
   <div class="marca">
     <img src="img/icone.png" alt="">
@@ -403,6 +426,72 @@ footer { padding-block: 28px 40px; padding-left: max(16px, env(safe-area-inset-l
                 const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); s.textContent = "Selecionado: copie com Ctrl+C"; }
     setTimeout(() => { s.textContent = ""; }, 2500);
   });
+
+  // (26/10/2026, as boas praticas do Hunt Analyzer, pedido do usuario: "principalmente a questao do bug do header que fica
+  // maior no BRAVE e a questao de puxar pra baixo e recarregar a pagina")
+  // O topo e o relogio do iPhone: o Safari desenha a pagina por baixo do relogio e o recuo (safe-area-inset-top) e preciso;
+  // o Brave mostra a pagina abaixo da barra dele, mas informa o mesmo recuo, e sobrava uma faixa vazia em cima. Em pe, a tela
+  // com bem mais altura que a janela tem barra do navegador em cima: ali o recuo sai. No app da tela inicial fica sempre.
+  function topoSeguro() {
+    const app = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+    const alto = Math.max(screen.width, screen.height);
+    document.documentElement.classList.toggle("sem-topo-seguro", !app && innerHeight > innerWidth && alto - innerHeight > 150);
+  }
+  topoSeguro();
+  addEventListener("resize", topoSeguro);
+  // Puxar para recarregar: o do navegador esta desligado (overscroll-behavior). O circulo desce metade do dedo (ate 100 px);
+  // solto depois de 64, gira e recarrega. So com a pagina no topo; o dedo tem que ir bem para baixo (o de lado e outro gesto).
+  (() => {
+    const el = document.getElementById("puxar");
+    if (!el) return;
+    const girar = el.querySelector("svg"), LIMIAR = 64, MAXIMO = 100;
+    let toque = null, ultima = 0, ocupado = false;
+    const distancia = (dedo) => (dedo > 0 ? Math.min(MAXIMO, dedo * 0.5) : 0);
+    const tipo = (dx, dy) => {
+      const lado = Math.abs(dx);
+      if (dy < -4 || (lado > 8 && lado >= dy)) return "outro";
+      if (dy > 8 && dy > lado * 1.5) return "puxao";
+      return "cedo";
+    };
+    const mostrar = (d, solto) => {
+      ultima = d;
+      el.style.transition = solto ? "transform .2s ease-out, opacity .2s ease-out" : "none";
+      el.style.transform = "translateY(" + (d - 44) + "px)";
+      el.style.opacity = String(Math.min(1, d / (LIMIAR * 0.6)));
+      girar.style.transform = el.classList.contains("girando") ? "" : "rotate(" + d * 3 + "deg)";
+    };
+    addEventListener("touchstart", (e) => {
+      toque = null;
+      if (ocupado || e.touches.length !== 1 || window.scrollY > 0) return;
+      const alvo = e.target && e.target.closest ? e.target : document.body;
+      if (alvo.closest("input, select, textarea, [data-sem-puxar]")) return;
+      el.style.top = getComputedStyle(document.documentElement).paddingTop || "0px";   // nasce abaixo do relogio
+      toque = { x: e.touches[0].clientX, y: e.touches[0].clientY, ativo: false };
+    }, { passive: true });
+    addEventListener("touchmove", (e) => {
+      if (!toque) return;
+      const dx = e.touches[0].clientX - toque.x, dy = e.touches[0].clientY - toque.y;
+      if (!toque.ativo) {
+        const t = tipo(dx, dy);
+        if (t === "outro") toque = null;
+        if (t !== "puxao") return;
+        toque.ativo = true;
+      }
+      mostrar(distancia(dy), false);
+    }, { passive: true });
+    const fim = () => {
+      const t = toque;
+      toque = null;
+      if (!t || !t.ativo) return;
+      if (ultima < LIMIAR) return mostrar(0, true);
+      ocupado = true;
+      el.classList.add("girando");
+      mostrar(LIMIAR, true);
+      setTimeout(() => location.reload(), 600);   // o giro aparece antes (para ver que aconteceu)
+    };
+    addEventListener("touchend", fim, { passive: true });
+    addEventListener("touchcancel", () => { toque = null; if (!ocupado) mostrar(0, true); }, { passive: true });
+  })();
 </script>
 </body>
 </html>
