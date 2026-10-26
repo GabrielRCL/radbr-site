@@ -93,8 +93,6 @@ p { margin: 0; }
 .botao.pedra { background: var(--cartao-2); color: var(--texto); box-shadow: 0 0 0 1px var(--linha-2); }
 .botao:focus-visible { outline: 3px solid var(--ouro-1); outline-offset: 3px; }
 .botao svg { width: 18px; height: 18px; }
-.provas { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 30px; font-size: 14px; color: var(--texto-2); }
-.provas b { color: var(--verde); font-size: 15px; }
 
 /* o celular (o print de verdade numa moldura) */
 .celular { border-radius: 38px; padding: 9px; background: #0c0c0b; box-shadow: 0 0 0 2px #3b3732, 0 30px 70px #000c; }
@@ -106,12 +104,6 @@ p { margin: 0; }
 .aviso-cel .eti { position: absolute; right: 10px; top: 8px; font-size: 11px; font-weight: 700; color: var(--sobre-ouro); background: var(--ouro);
                   padding: 2px 8px; border-radius: 999px; }
 
-/* ---------------------------------------------------------------- os numeros */
-.numeros { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-.num { background: var(--cartao); border-radius: 16px; padding: 18px 18px 16px; box-shadow: 0 0 0 1px var(--linha); }
-.num b { display: block; font-size: clamp(24px, 3vw, 32px); color: var(--verde); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
-.num span { display: block; margin-top: 6px; font-size: 14px; color: var(--texto-2); line-height: 1.45; }
-.fonte-num { margin-top: 14px; font-size: 13px; color: var(--texto-3); }
 
 /* ---------------------------------------------------------------- passos */
 .passos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; counter-reset: p; }
@@ -203,7 +195,7 @@ footer { padding-block: 28px 40px; padding-left: max(16px, env(safe-area-inset-l
   .recurso.inverte > :first-child { order: 0; }
   .largo-texto { grid-template-columns: minmax(0, 1fr); }
   .largo-texto ul { grid-column: 1; grid-row: auto; margin-top: 18px; }
-  .numeros, .passos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .passos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .catalogo { flex-direction: column; }
   .catalogo .col { width: 100%; }
   .celulares { grid-template-columns: repeat(4, 72%); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
@@ -241,7 +233,6 @@ footer { padding-block: 28px 40px; padding-left: max(16px, env(safe-area-inset-l
           Quero testar grátis</a>
         <a class="botao pedra" href="#precos">Ver preços</a>
       </div>
-      <div class="provas"><span><b>+655k/h</b> de saldo numa sessão de 19h</span><span><b>3,77kk/h</b> de raw XP, o time somado</span><span><b>0</b> mortes em 3h07</span></div>
     </div>
     <div class="nota">
       <div class="celular"><img src="img/cel_geral.jpg" alt="O Hunt Analyzer no celular: tempo de sessão 3h07, saldo por hora +377k, raw XP por hora 2,64kk, gold por hora 435k"></div>
@@ -249,19 +240,6 @@ footer { padding-block: 28px 40px; padding-left: max(16px, env(safe-area-inset-l
     </div>
   </div>
 </header>
-
-<section class="faixa escura" aria-labelledby="t-numeros">
-  <div class="miolo">
-    <div class="titulo-secao"><p class="rotulo">Números da nossa hunt</p><h2 id="t-numeros">Prints de verdade, não simulação</h2></div>
-    <div class="numeros">
-      <div class="num"><b>+655k/h</b><span>de saldo numa sessão de 19h05 (loot menos supplies)</span></div>
-      <div class="num"><b>3,77kk/h</b><span>de raw XP numa sessão de 13h01, o time somado</span></div>
-      <div class="num"><b>425kk/h</b><span>de XP do jogo por char, com a party inteira junta</span></div>
-      <div class="num"><b>0</b><span>mortes numa hunt de 3h07, a party inteira</span></div>
-    </div>
-    <p class="fonte-num">Do Hunt Analyzer da nossa party de 7 chars na Vortex, em 24 e 25/10/2026. O resultado depende da sua hunt, do seu setup e dos seus preços.</p>
-  </div>
-</section>
 
 <section class="faixa" aria-labelledby="t-como">
   <div class="miolo">
