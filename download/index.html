@@ -216,6 +216,9 @@ p { margin: 0; }
 .funcao h4 + .desc { margin-top: 0; }
 .funcao-midia { margin: 14px 0 0; }
 .funcao-midia img, .funcao-midia video { border-radius: 12px; box-shadow: 0 0 0 1px #3b3732; width: 100%; height: auto; }
+/* (06/11/2026) os prints do jogo no maximo no tamanho real (um Setup de 391 px esticado na largura do card ficava pixelado):
+   o conteudo.py poe o max-width de cada um. Com width 100% e o width/height do HTML, o espaco fica reservado antes de carregar */
+.funcao-midia img { display: block; }
 .funcao-midia figcaption { margin-top: 8px; font-size: 13px; color: var(--texto-3); }
 .como-usar { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 14.5px; color: var(--texto-2); }
 .chamada { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px 24px; background: var(--cartao);
