@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- (06/11/2026) A pagina de download (o usuario: "vamos fazer uma pagina de download, mas nao tem ancoragem na landing page.
+     eu mando quando a pessoa entra em contato comigo"). Nenhuma pagina aponta para ca, e o noindex tira dos buscadores.
+     O link do launcher sai do versao.json do prod na hora (o mesmo que os launchers leem para se atualizar): depois de um
+     --promover, em ~1 min (o cache do Supabase) ja baixa a versao nova, sem mexer aqui. Copiada pelo site.py para
+     download/index.html. Teste: conferir_download.py. -->
+<title>Baixar o Rad Helper</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="O launcher do Rad Helper para Windows. O teste é grátis e não pede chave.">
+<meta name="theme-color" content="#1b1a17">
+<link rel="icon" type="image/png" href="/img/icone.png">
+<link rel="apple-touch-icon" href="/img/icone.png">
+<link rel="canonical" href="https://radhelper.gabrielrcl.dev/download/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Rad Helper">
+<meta property="og:title" content="Baixar o Rad Helper">
+<meta property="og:description" content="O launcher do Rad Helper para Windows. O teste é grátis e não pede chave.">
+<meta property="og:url" content="https://radhelper.gabrielrcl.dev/download/">
+<meta property="og:image" content="https://radhelper.gabrielrcl.dev/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="O Hunt Analyzer do Rad Helper no celular: saldo por hora, raw XP por hora e o tempo da sessão">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+/* as cores e os botoes da landing (pagina.base.html) */
+:root {
+  --fundo: #1b1a17;
+  --pedra: #25231f;
+  --cartao: #2f2c27;
+  --cartao-2: #38342e;
+  --linha: #f1b4321f;
+  --linha-2: #ffffff14;
+  --texto: #ece6d9;
+  --texto-2: #b9b09f;
+  --texto-3: #8f8778;
+  --ouro: #f1b432;
+  --ouro-1: #ffe060;
+  --ouro-3: #e8931c;
+  --sobre-ouro: #2a1600;
+  --verde: #5fe38a;
+  --f-texto: Verdana, "DejaVu Sans", Geneva, sans-serif;
+  color-scheme: dark;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fundo); color: var(--texto); font-family: var(--f-texto); font-size: 16px; line-height: 1.6;
+       -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+a { color: var(--ouro-1); }
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.15; letter-spacing: -.015em; }
+p { margin: 0; }
+.faixa { padding-block: 28px clamp(40px, 7vw, 72px); padding-left: max(16px, env(safe-area-inset-left, 0px));
+         padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.miolo { max-width: 880px; margin: 0 auto; }
+.marca { display: flex; align-items: center; gap: 12px; margin-bottom: clamp(28px, 5vw, 48px); }
+.marca img { width: 44px; height: 44px; border-radius: 10px; }
+.marca b { font-size: 20px; letter-spacing: .01em; }
+.marca b span { color: var(--ouro); }
+.rotulo { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ouro); }
+h1 { font-size: clamp(30px, 5.6vw, 46px); margin-top: 10px; }
+.sub { color: var(--texto-2); margin-top: 14px; font-size: 17px; max-width: 60ch; }
+
+.caixa { margin-top: 28px; background: var(--pedra); border-radius: 18px; padding: clamp(18px, 4vw, 28px);
+         box-shadow: 0 0 0 1px var(--linha); }
+.caixa[hidden] { display: none; }
+.situacao { display: flex; align-items: center; gap: 10px; color: var(--texto-2); }
+.situacao .ponto { width: 10px; height: 10px; border-radius: 50%; background: var(--texto-3); flex: none; }
+.situacao.pronto .ponto { background: var(--verde); box-shadow: 0 0 0 4px #5fe38a22; }
+.acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 18px; }
+.botao { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 22px; border-radius: 12px;
+         font-weight: 700; font-size: 16px; text-decoration: none; border: 0; cursor: pointer; font-family: inherit; }
+.botao.ouro { background: linear-gradient(180deg, var(--ouro-1), var(--ouro) 55%, var(--ouro-3)); color: var(--sobre-ouro);
+              box-shadow: 0 8px 22px #0008, inset 0 1px 0 #fff8; }
+.botao.pedra { background: var(--cartao-2); color: var(--texto); box-shadow: 0 0 0 1px var(--linha-2); }
+.botao:focus-visible { outline: 3px solid var(--ouro-1); outline-offset: 3px; }
+.botao svg { width: 18px; height: 18px; flex: none; }
+.detalhe { font-size: 13.5px; color: var(--texto-3); }
+.endereco { display: block; margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: var(--fundo); color: var(--ouro-1);
+            font-size: 15px; overflow-wrap: anywhere; box-shadow: 0 0 0 1px var(--linha-2); }
+.caixa h2 { font-size: 21px; margin-bottom: 8px; }
+.caixa > p { color: var(--texto-2); }
+
+.titulo-passos { font-size: 21px; margin: clamp(36px, 6vw, 52px) 0 16px; }
+.passos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; counter-reset: p; }
+.passos li { counter-increment: p; background: var(--cartao); border-radius: 16px; padding: 18px; box-shadow: 0 0 0 1px var(--linha-2); }
+.passos li::before { content: counter(p); display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; margin-bottom: 12px;
+                     background: var(--ouro); color: var(--sobre-ouro); font-weight: 700; }
+.passos h3 { font-size: 17px; margin-bottom: 6px; }
+.passos p { font-size: 14.5px; color: var(--texto-2); }
+.passos b { color: var(--texto); font-weight: 700; }
+
+.ajuda { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px;
+         padding: 18px clamp(18px, 4vw, 24px); border-radius: 16px; background: var(--cartao); box-shadow: 0 0 0 1px var(--linha-2); }
+.ajuda p { color: var(--texto-2); }
+footer { padding: 24px 16px 36px; text-align: center; font-size: 12.5px; color: var(--texto-3); border-top: 1px solid var(--linha); }
+
+@media (max-width: 640px) {
+  .passos { grid-template-columns: minmax(0, 1fr); }
+  .acoes .botao { width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="faixa">
+<main class="miolo">
+  <div class="marca"><img src="/img/icone.png" alt=""><b>Rad <span>Helper</span></b></div>
+
+  <p class="rotulo">Download</p>
+  <h1>Baixar o Rad Helper</h1>
+  <p class="sub">O launcher para Windows. O teste é grátis e não pede chave.</p>
+
+  <!-- no PC com Windows: o download comeca sozinho -->
+  <section class="caixa" id="no-pc">
+    <p class="situacao" id="situacao" role="status"><span class="ponto"></span><span id="situacao-texto">Procurando a versão mais nova…</span></p>
+    <div class="acoes">
+      <a class="botao ouro" id="baixar" href="https://emjmemmchusdmwtzxqnj.supabase.co/storage/v1/object/public/publico/launcher/9980_2026-11-02_00h00/SmartBotLauncher.exe">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+        <span id="baixar-texto">Baixar o launcher</span>
+      </a>
+      <span class="detalhe" id="versao">Windows 10 e 11</span>
+    </div>
+  </section>
+
+  <!-- no celular: o .exe nao abre; o link vai para o PC -->
+  <section class="caixa" id="no-celular" hidden>
+    <h2>Abra este link no PC</h2>
+    <p>O Rad Helper é um programa para Windows e não funciona no celular. No computador, abra o endereço:</p>
+    <span class="endereco" id="endereco">radhelper.gabrielrcl.dev/download</span>
+    <div class="acoes">
+      <button class="botao ouro" id="copiar" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+        <span id="copiar-texto">Copiar o link</span>
+      </button>
+    </div>
+  </section>
+
+  <h2 class="titulo-passos">Depois de baixar</h2>
+  <ol class="passos">
+    <li><h3>Abra o arquivo</h3><p>O <b>SmartBotLauncher.exe</b> é o próprio programa, sem instalação. Deixe ele numa pasta que você não vai limpar.</p></li>
+    <li><h3>Se aparecer um aviso</h3><p>O launcher ainda não tem assinatura digital. Se o navegador segurar o download, escolha <b>Manter</b>. Na tela azul do Windows, clique em <b>Mais informações</b> e depois em <b>Executar assim mesmo</b>.</p></li>
+    <li><h3>Ele instala o bot</h3><p>Com o RadBR instalado e aberto pelo menos uma vez, o launcher instala as configs SmartBot e fica na bandeja, ao lado do relógio.</p></li>
+    <li><h3>Escolha a config no jogo</h3><p>Na janela do Bot, escolha a SmartBot da vocação: <b>CK</b> (Knocker), <b>ED</b> (Druid), <b>LD</b> (Drunou) ou <b>RP</b> (Paladin).</p></li>
+  </ol>
+
+  <div class="ajuda">
+    <p>Travou em algum passo? Me chama que eu ajudo.</p>
+    <a class="botao pedra" href="https://wa.me/5527999059463?text=Ol%C3%A1!%20Baixei%20o%20Rad%20Helper%20e%20preciso%20de%20ajuda." target="_blank" rel="noopener">Falar no WhatsApp</a>
+  </div>
+</main>
+</div>
+<footer>Rad Helper · Ferramenta independente: não é feita nem mantida pelo RadBR. RadBR e vBot pertencem aos seus donos.</footer>
+
+<script>
+(function () {
+  var PUBLICO = "https://emjmemmchusdmwtzxqnj.supabase.co/storage/v1/object/public/publico/";
+  // Sem resposta do versao.json: o href do botao (o launcher do dia em que a pagina foi feita). Um launcher velho serve:
+  // ao abrir, ele mesmo se troca pelo mais novo.
+  var RESERVA = document.getElementById("baixar").href;
+  var PRAZO_MS = 6000;
+  var CAMINHO = /^launcher\/[A-Za-z0-9_][A-Za-z0-9_.-]*\/SmartBotLauncher\.exe$/;   // so uma pasta do launcher no bucket publico
+
+  var n = navigator, ua = n.userAgent || "";
+  var celular = /Android|iPhone|iPad|iPod|Mobile/i.test(ua) || (/Macintosh/.test(ua) && n.maxTouchPoints > 1);
+  var windows = !celular && /Windows/.test(ua);
+
+  var botao = document.getElementById("baixar");
+  var situacao = document.getElementById("situacao");
+  var situacaoTexto = document.getElementById("situacao-texto");
+  var versao = document.getElementById("versao");
+
+  if (celular) {
+    document.getElementById("no-pc").hidden = true;
+    document.getElementById("no-celular").hidden = false;
+    var endereco = "https://radhelper.gabrielrcl.dev/download";
+    var copiar = document.getElementById("copiar"), copiarTexto = document.getElementById("copiar-texto");
+    copiar.addEventListener("click", function () {
+      var feito = function () { copiarTexto.textContent = "Copiado!"; setTimeout(function () { copiarTexto.textContent = "Copiar o link"; }, 2500); };
+      var semApi = function () {
+        var c = document.createElement("textarea");
+        c.value = endereco; c.setAttribute("readonly", ""); c.style.position = "fixed"; c.style.opacity = "0";
+        document.body.appendChild(c); c.select();
+        try { document.execCommand("copy"); feito(); } catch (e) {}
+        document.body.removeChild(c);
+      };
+      if (n.clipboard && n.clipboard.writeText) n.clipboard.writeText(endereco).then(feito, semApi); else semApi();
+    });
+    return;
+  }
+
+  var decidido = false;
+  function usar(url, nomeVersao) {
+    if (decidido) return;
+    decidido = true;
+    botao.href = url;
+    if (nomeVersao) versao.textContent = "Versão " + nomeVersao + " · Windows 10 e 11";
+    if (windows) {
+      situacao.className = "situacao pronto";
+      situacaoTexto.textContent = "O download começou. Se não começar, use o botão.";
+      document.getElementById("baixar-texto").textContent = "Baixar de novo";
+      window.location.assign(url);
+    } else {
+      situacaoTexto.textContent = "O Rad Helper é só para Windows. Baixe aqui para levar ao PC.";
+    }
+  }
+
+  setTimeout(function () { usar(RESERVA, ""); }, PRAZO_MS);
+  if (!window.fetch) { usar(RESERVA, ""); return; }
+  fetch(PUBLICO + "versao.json", { cache: "no-store" })
+    .then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); })
+    .then(function (d) {
+      var l = d && d.launcher;
+      if (l && typeof l.arquivo === "string" && CAMINHO.test(l.arquivo)) {
+        usar(PUBLICO + l.arquivo, typeof l.versao === "string" && /^[\w.-]{1,30}$/.test(l.versao) ? l.versao : "");
+      } else {
+        usar(RESERVA, "");
+      }
+    })
+    .catch(function () { usar(RESERVA, ""); });
+})();
+</script>
+</body>
+</html>
