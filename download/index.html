@@ -481,10 +481,13 @@ footer { padding-block: 28px 40px; padding-left: max(16px, env(safe-area-inset-l
 // o Brave mostra a pagina abaixo da barra dele, mas informa o mesmo recuo, e sobrava uma faixa vazia em cima. Em pe, a tela
 // com bem mais altura que a janela tem barra do navegador em cima: ali o recuo sai. No app da tela inicial fica sempre.
 // (06/11) O recuo e o --topo-seguro do estilo.css, usado dentro do menu fixo.
+// (06/11, o usuario: "no celular (brave), quando arrasto pra baixo fica um espaco em branco no topo, quando solto o dedo ele
+// some") O recuo so sai, nunca volta: rolando, a barra do Brave encolhe, a janela fica quase da altura da tela e o recuo
+// voltava (uns 59 px vazios dentro do menu, ate a barra abrir de novo). A barra continua em cima da pagina.
 function topoSeguro() {
   const app = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
   const alto = Math.max(screen.width, screen.height);
-  document.documentElement.classList.toggle("sem-topo-seguro", !app && innerHeight > innerWidth && alto - innerHeight > 150);
+  if (!app && innerHeight > innerWidth && alto - innerHeight > 150) document.documentElement.classList.add("sem-topo-seguro");
 }
 topoSeguro();
 addEventListener("resize", topoSeguro);
